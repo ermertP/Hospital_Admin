@@ -1,23 +1,36 @@
 const express = require('express');
-const path = require('path'); // NEW
+const mongoose = require('mongoose');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+
+const appointment = require('./controllers/appointments');
+const departments = require('./controllers/departments');
+const patients = require('./controllers/patients');
+const providers = require('./controllers/providers');
+
 const app = express();
-const port = process.env.PORT || 3000;
-const corsOptions = {
-  origin: '*',
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
-};
 
-app.use(cors(corsOptions));
-const mockResponse = {
-  test: 'this is a test',
-};
-app.get('/api', (req, res) => {
-  console.log('REQUEST HIT SERVER');
-  res.send(mockResponse);
-});
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
 
-app.listen(port, function () {
-  console.log('Server listening on port: ' + port);
-});
+// Controller routes
+app.use('/appointments', appointment);
+app.use('/departments', departments);
+app.use('/patients', patients);
+app.use('/providers', providers);
+
+// Connect to MongoDB
+mongoose
+  .connect('mongodb://localhost:27017/react-admin', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.log(err));
+
+// Start the server
+const PORT = 8080;
+app.listen(PORT, () =>
+  console.log(`Connection succeeded: Listening on port ${PORT}`)
+);
