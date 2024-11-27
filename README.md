@@ -1,5 +1,5 @@
-- Welcome to a Hospital Administration Simulator.
-- The purpose of this project is to show trends across hospital interations that could be beneficial for hospital admin operations and improving patient care.
+- Welcome to the Hospital Administration Simulator.
+- The purpose of this project is to show trends across facility operations. These trends could be used to improve hospital operations and overall patient care.
 - This platform currently displays mock appointments, departments, patients, and providers for a simulated hospital.
 
 Running this project locally for development:

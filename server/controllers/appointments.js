@@ -5,39 +5,82 @@ const router = express.Router();
 
 // Get all appointments
 router.get('/', async (req, res) => {
-  const appointments = await Appointment.find();
-  res.json(appointments);
+  try {
+    await Appointment.find().then((result) => {
+      res.status(200).setHeader('X-Total-Count', result.length).json(result);
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
 });
 
 // Get a single appointment
 router.get('/:id', async (req, res) => {
-  const appointment = await Appointment.findById(req.params.id);
-  res.json(appointment);
+  const { id } = req.params;
+  try {
+    await Appointment.findById(id).then((result) => {
+      if (result) {
+        return res.status(200).json(result);
+      } else {
+        return res.status(404).json({
+          message: `Error: Failed to find Appointment with ID: ${req.params.id}`,
+        });
+      }
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
 });
 
-// Create a appointment
+// Create an appointment
 router.post('/', async (req, res) => {
-  const appointment = new Appointment(req.body);
-  await appointment.save();
-  res.status(201).json(appointment);
+  try {
+    const newAppointment = new Appointment(req.body);
+    await newAppointment.save().then((result) => {
+      return res.status(201).json(result);
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
 });
 
-// Update a appointment
+// Update an appointment
 router.put('/:id', async (req, res) => {
-  const appointment = await Appointment.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
+  try {
+    const { id } = req.params;
+    const updatedAppointment = req.body;
+    await Appointment.findByIdAndUpdate(id, updatedAppointment, {
       new: true,
-    }
-  );
-  res.json(appointment);
+    }).then((result) => {
+      if (result) {
+        return res.status(200).json(result);
+      } else {
+        return res.status(404).json({
+          message: `Error: Failed to find Appointment with ID: ${req.params.id}`,
+        });
+      }
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
 });
 
-// Delete a appointment
+// Delete an appointment
 router.delete('/:id', async (req, res) => {
-  await Appointment.findByIdAndDelete(req.params.id);
-  res.status(204).end();
+  try {
+    const { id } = req.params;
+    await Appointment.findByIdAndDelete(id).then((result) => {
+      if (result) {
+        return res.status(200).json(`Deleted Appointment ${id} successfully`);
+      } else {
+        return res.status(400).json({
+          message: `Error: No Appointment ID found matching ${req.params.id}`,
+        });
+      }
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
 });
 
 module.exports = router;

@@ -10,9 +10,21 @@ const appointmentSchema = new mongoose.Schema({
   },
   date: { type: Date },
   time: { type: Number },
-  //   patient, -- ref ID
-  //   provider -- ref ID
-  //department -- ref ID
+  patient_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Provider',
+    required: true,
+  },
+  provider_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Provider',
+    required: true,
+  },
+  department_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Department',
+    required: true,
+  },
   providerNotes: { type: String },
 });
 
