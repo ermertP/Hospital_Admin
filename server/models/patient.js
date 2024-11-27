@@ -32,16 +32,30 @@ const patientSchema = new mongoose.Schema({
   },
   diagnoses: [
     {
-      name: { type: String, unique: true },
+      diagnosis_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Diagnosis',
+        // required: true,
+      },
       date: { type: Date },
       providerNotes: { type: String },
-      // department: {type: String, max: 100}, // to do: change to a reference ID
-      // provider: {type: String, max: 100}, // to do: change to a reference ID
+      department_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Department',
+        required: true,
+      },
+      provider_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Provider',
+        required: true,
+      },
     },
   ],
-  appointments: [
+  appointment_ids: [
     {
-      //appointment_id: { type: String, unique: true },// to do: change to a reference ID
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Appointment',
+      required: true,
     },
   ],
 });

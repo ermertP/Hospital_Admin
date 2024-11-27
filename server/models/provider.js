@@ -8,14 +8,18 @@ const providerSchema = new mongoose.Schema({
   officePhone: { type: Number, required: true },
   personalPhone: { type: Number, required: true, unique: true },
   department: { type: String, required: true, unique: true },
-  patients: [
+  patient_ids: [
     {
-      // patient_id: {type: String, max: 100}, // to do: change to a reference ID
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Patient',
+      required: true,
     },
   ],
-  appointments: [
+  appointment_ids: [
     {
-      // appointment_id: {type: String, max: 100}, // to do: change to a reference ID
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Appointment',
+      required: true,
     },
   ],
 });

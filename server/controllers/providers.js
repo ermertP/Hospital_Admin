@@ -3,37 +3,84 @@ const Provider = require('../models/provider');
 
 const router = express.Router();
 
-// Get all providers
+// Get all Providers
 router.get('/', async (req, res) => {
-  const providers = await Provider.find();
-  res.json(providers);
+  try {
+    await Provider.find().then((result) => {
+      res.status(200).setHeader('X-Total-Count', result.length).json(result);
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
 });
 
-// Get a single provider
+// Get a single Provider
 router.get('/:id', async (req, res) => {
-  const provider = await Provider.findById(req.params.id);
-  res.json(provider);
+  const { id } = req.params;
+  try {
+    await Provider.findById(id).then((result) => {
+      if (result) {
+        return res.status(200).json(result);
+      } else {
+        return res.status(404).json({
+          message: `Error: Failed to find Provider with ID: ${req.params.id}`,
+        });
+      }
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
 });
 
-// Create a provider
+// Create a Provider
 router.post('/', async (req, res) => {
-  const provider = new Provider(req.body);
-  await provider.save();
-  res.status(201).json(provider);
+  try {
+    const newProvider = new Provider(req.body);
+    await newProvider.save().then((result) => {
+      return res.status(201).json(result);
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
 });
 
-// Update a provider
+// Update a Provider
 router.put('/:id', async (req, res) => {
-  const provider = await Provider.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
-  res.json(provider);
+  try {
+    const { id } = req.params;
+    const updatedProvider = req.body;
+    await Provider.findByIdAndUpdate(id, updatedProvider, {
+      new: true,
+    }).then((result) => {
+      if (result) {
+        return res.status(200).json(result);
+      } else {
+        return res.status(404).json({
+          message: `Error: Failed to find Provider with ID: ${req.params.id}`,
+        });
+      }
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
 });
 
-// Delete a provider
+// Delete a Provider
 router.delete('/:id', async (req, res) => {
-  await Provider.findByIdAndDelete(req.params.id);
-  res.status(204).end();
+  try {
+    const { id } = req.params;
+    await Provider.findByIdAndDelete(id).then((result) => {
+      if (result) {
+        return res.status(200).json(`Deleted Provider ${id} successfully`);
+      } else {
+        return res.status(400).json({
+          message: `Error: No Provider ID found matching ${req.params.id}`,
+        });
+      }
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
 });
 
 module.exports = router;

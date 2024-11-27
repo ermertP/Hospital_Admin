@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+require('dotenv').config();
+const MONGO_URI = process.env.MONGO_URI;
 const appointment = require('./controllers/appointments');
 const departments = require('./controllers/departments');
 const patients = require('./controllers/patients');
@@ -11,7 +12,11 @@ const providers = require('./controllers/providers');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    exposedHeaders: 'X-TOTAL-Count', // Expose Content-Range for React Admin
+  })
+);
 app.use(bodyParser.json());
 
 // Controller routes
@@ -22,12 +27,12 @@ app.use('/providers', providers);
 
 // Connect to MongoDB
 mongoose
-  .connect('mongodb://localhost:27017/react-admin', {
+  .connect(MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.log(err));
+  .then(() => console.log('Successfully connected to MongoDB'))
+  .catch((err) => console.log('Error connecting to MongoDB:', err));
 
 // Start the server
 const PORT = 8080;

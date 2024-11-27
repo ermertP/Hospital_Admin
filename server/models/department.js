@@ -7,33 +7,39 @@ const departmentSchema = new mongoose.Schema({
   administrators: [
     {
       name: { type: String, required: true },
-      email: { type: String, unique: true, required: true },
+      email: { type: String, required: true },
       phoneNumber: { type: Number, required: true },
-      // department: {type: String, max: 100}, // to do: change to a reference ID
-      // provider: {type: String, max: 100}, // to do: change to a reference ID
+      department_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Department',
+        required: true,
+      },
+      provider_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Provider',
+        required: true,
+      },
     },
   ],
-  providers: [
+  provider_ids: [
     {
-      //provider_id: { type: String, unique: true },// to do: change to a reference ID
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Provider',
+      required: true,
     },
   ],
   address: {
     street: {
       type: String,
-      default: true,
     },
     town: {
       type: String,
-      default: false,
     },
     state: {
       type: String,
-      default: false,
     },
     zipCode: {
-      type: Boolean,
-      default: false,
+      type: Number,
     },
   },
 });
